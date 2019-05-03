@@ -1,4 +1,4 @@
-def render_board(height, width):
+def create_board(height, width, board):
     """Render the game board as a 2D List
 
     :param height: the height of the board
@@ -11,9 +11,13 @@ def render_board(height, width):
     print(*index_row + ' ')
 
     # Render the game grid
-    board = ['#'] * width
-    for i in range(1, height + 1):
-        print(*board)
+    for x in range(height):
+        row = []
+        for y in range(width):
+            row.append('#')
+        board.append(row)
+    for x in board:
+        print(*x)
 
 
 def player_move(width, x):
@@ -49,8 +53,9 @@ def main():
     x = 0
     height = 6
     width = 7
+    board = []
     input_team()
-    render_board(height, width)
+    create_board(height, width, board)
     player_move(width, x)
 
 
