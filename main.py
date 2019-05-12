@@ -1,3 +1,6 @@
+import copy
+
+
 def create_board(height, width):
     """Return a new empty game board as a 2D List
 
@@ -43,37 +46,65 @@ def input_team():
             return team_var
 
 
+def play_move(board, player_team, move):
+    """Renders the board with the users move
+    :param board:
+    :param player_team:
+    :param move:
+    :return:
+    """
+    new_board = copy.deepcopy(board)
+    assert 0 <= move - 1 < len(new_board[0])
+    i = len(new_board) - 1
+    while i >= 0:
+        if new_board[i][move - 1] != '#':
+            i = i - 1
+        else:
+            new_board[i][move - 1] = player_team
+            break
+    return new_board
+
+
 def render_board(board):
     """ Render a board to the console
     :param board:
     :return:
     """
-    print("123456\n######\n######\netc...")
+    # Render the first row of indexes
+    index_row = ""
+    for n in range(1, 8):
+        index_row += str(n)
+    print(*index_row + ' ')
+    # Renders the 2D array
+    board_string = ""
+    for row in board:
+        row_string = ""
+        for cell in row:
+            row_string += cell + " "
+        board_string += row_string + '\n'
+    print(board_string)
 
 
 def main():
     height = 6
     width = 7
-
+    i = 1
     # Get the player's team
     player_team = input_team()
     print(player_team)
 
     # Get a new empty board
     board = create_board(height, width)
-    # TODO: this should be render_board(board) instead
-    print(board)
-
-    # TODO: render the board properly
-    dumb_example_board = [['#', '#', '#'], ['#', '#', '#'], ['R', '#', 'Y']]
     render_board(board)
-    render_board(dumb_example_board)
+    while i > 0:
+        # Get the player's move
+        move = player_move(width)
+        print(move)
 
-    # Get the player's move
-    move = player_move(width)
-    print(move)
+        # Plays the player's move
+        board = play_move(board, player_team, move)
+        render_board(board)
 
-    # TODO: modify the board with the player's move and render it again
     # TODO: get the AI's move
     # TODO: modify the board with the ai's move and render it again
     # TODO: repeat until the game ends
