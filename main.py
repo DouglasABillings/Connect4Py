@@ -1,4 +1,5 @@
 import copy
+import random
 
 
 def create_board(height, width):
@@ -15,6 +16,26 @@ def create_board(height, width):
             row.append('#')
         board.append(row)
     return board
+
+
+def get_ai_move(board, comp_team):
+    """ Random generated computer move
+
+    :param board:
+    :param comp_team:
+    :return:
+    """
+    a = random.randint(1, len(board))
+    new_board = copy.deepcopy(board)
+    assert 0 <= a - 1 < len(new_board[0])
+    i = len(new_board) - 1
+    while i >= 0:
+        if new_board[i][a - 1] != '#':
+            i = i - 1
+        else:
+            new_board[i][a - 1] = comp_team
+            break
+    return new_board
 
 
 def player_move(width):
@@ -72,7 +93,7 @@ def render_board(board):
     """
     # Render the first row of indexes
     index_row = ""
-    for n in range(1, 8):
+    for n in range(1, len(board[0]) + 1):
         index_row += str(n)
     print(*index_row + ' ')
     # Renders the 2D array
@@ -88,15 +109,15 @@ def render_board(board):
 def main():
     height = 6
     width = 7
-    i = 1
+    win_condition = False
     # Get the player's team
     player_team = input_team()
     print(player_team)
-
+    comp_team = 'R' if player_team == 'Y' else 'Y'
     # Get a new empty board
     board = create_board(height, width)
     render_board(board)
-    while i > 0:
+    while win_condition is False:
         # Get the player's move
         move = player_move(width)
         print(move)
@@ -105,8 +126,10 @@ def main():
         board = play_move(board, player_team, move)
         render_board(board)
 
-    # TODO: get the AI's move
-    # TODO: modify the board with the ai's move and render it again
+        # Plays a random computer move
+        board = get_ai_move(board, comp_team)
+        render_board(board)
+
     # TODO: repeat until the game ends
 
 
