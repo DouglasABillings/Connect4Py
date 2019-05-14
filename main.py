@@ -18,24 +18,14 @@ def create_board(height, width):
     return board
 
 
-def get_ai_move(board, comp_team):
+def get_ai_move(board):
     """ Random generated computer move
 
     :param board:
-    :param comp_team:
     :return:
     """
-    a = random.randint(1, len(board))
-    new_board = copy.deepcopy(board)
-    assert 0 <= a - 1 < len(new_board[0])
-    i = len(new_board) - 1
-    while i >= 0:
-        if new_board[i][a - 1] != '#':
-            i = i - 1
-        else:
-            new_board[i][a - 1] = comp_team
-            break
-    return new_board
+    ai_move = random.randint(1, len(board))
+    return ai_move
 
 
 def player_move(width):
@@ -109,7 +99,7 @@ def render_board(board):
 def main():
     height = 6
     width = 7
-    win_condition = False
+    game_over = False
     # Get the player's team
     player_team = input_team()
     print(player_team)
@@ -117,7 +107,7 @@ def main():
     # Get a new empty board
     board = create_board(height, width)
     render_board(board)
-    while win_condition is False:
+    while game_over is False:
         # Get the player's move
         move = player_move(width)
         print(move)
@@ -127,7 +117,7 @@ def main():
         render_board(board)
 
         # Plays a random computer move
-        board = get_ai_move(board, comp_team)
+        board = play_move(board, comp_team, get_ai_move(board))
         render_board(board)
 
     # TODO: repeat until the game ends
