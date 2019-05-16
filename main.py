@@ -96,23 +96,61 @@ def render_board(board):
     print(board_string)
 
 
+def is_game_over(board):
+    """Used to check the board for a win condition or a tie
+
+    :param board: 2D Array
+    :return: (Boolean, Character or None)
+    """
+    # Direction vectors
+    directions = [
+        (-1, -1), (0, -1), (1, -1),
+        (-1, 0), (1, 0),
+        (-1, 1), (0, 1), (1, 1)
+    ]
+
+    for y in range(len(board)):
+        for x in range(len(board[0])):
+            if board[y][x] == '#':
+                continue
+
+            for delta in directions:
+                first_cell = board[y][x]
+                for steps in range(1, 4):
+                    new_y = y + delta[0] * steps
+                    new_x = x + delta[1] * steps
+                    in_bounds = 0 <= new_y < len(board) and 0 <= new_x < len(board[0])
+
+                    if not in_bounds:
+                        break
+                    if board[new_y][new_x] != first_cell:
+                        break
+                    if steps == 3:
+                        # Connect 4!
+                        return True, first_cell
+
+    for cell in board[0]:
+        if cell == '#':
+            # The game is still in progress
+            return False, None
+
+    # The game is a tie
+    return True, None
+
+
 def main():
     height = 6
     width = 7
     game_over = False
     # Get the player's team
     player_team = input_team()
-    print(player_team)
     comp_team = 'R' if player_team == 'Y' else 'Y'
     # Get a new empty board
     board = create_board(height, width)
     render_board(board)
-    while game_over is False:
-        # Get the player's move
-        move = player_move(width)
-        print(move)
-
+    while not game_over:
         # Plays the player's move
+        move = player_move(width)
         board = play_move(board, player_team, move)
         render_board(board)
 
@@ -120,7 +158,11 @@ def main():
         board = play_move(board, comp_team, get_ai_move(board))
         render_board(board)
 
-    # TODO: repeat until the game ends
+        # Check for win
+        game_over, winning_team = is_game_over(board)
+
+    if game_over:
+        print("Good game " + winning_team + "!")
 
 
 if __name__ == "__main__":
